@@ -18,7 +18,7 @@
             name: 'song-edit',
             params () {
               return {
-                songId: song.id
+                songId: song._id
               }
             }
           }">
@@ -71,7 +71,7 @@ export default {
     async setAsBookmark () {
       try {
         this.bookmark = (await BookmarkService.post({
-          songId: this.song.id
+          songId: this.song._id
         })).data
       } catch (err) {
         console.log(err)
@@ -79,7 +79,7 @@ export default {
     },
     async unsetAsBookmark () {
       try {
-        this.bookmark = (await BookmarkService.delete(this.bookmark.id)).data
+        this.bookmark = (await BookmarkService.delete(this.bookmark._id)).data
       } catch (err) {
         console.log(err)
       }

@@ -1,5 +1,4 @@
 const {Bookmark, Song} = require('../models')
-const {Op} = require('sequelize')
 
 const _ = require('lodash')
 
@@ -9,28 +8,16 @@ module.exports = {
       const userId = req.user.id
       const {songId} = req.query
 
-      const where = {
-        UserId: userId
+      const query = {
+        user: userId
       }
       if (songId) {
-        where.SongId = songId
+        query.song = songId
       }
 
-      const bookmarks = await Bookmark.findAll({
-        where: where,
-        include: [
-          {
-            model: Song
-          }
-        ]
-      })
-        .map(bookmark => bookmark.toJSON())
-        .map(bookmark => _.extend(
-          {},
-          bookmark.Song,
-          bookmark
-        ))
-      
+      const bookmarks = await Bookmark.find(query)
+        .populate('song', ['title','artist'])
+  
       res.send(bookmarks)
     } catch (err) {
       console.log(`Error ${err}`)
@@ -45,20 +32,17 @@ module.exports = {
       const {songId} = req.body
 
       const bookmark = await Bookmark.findOne({
-        where: {
-          SongId: songId,
-          UserId: userId
-        }
+        user: songId,
+        song: userId
       })
       if (bookmark) {
         return res.status(400).send({
           error: 'You already have this as a bookmark'
         })
       }
-
       const newBookmark = await Bookmark.create({
-        SongId: songId,
-        UserId: userId
+        song: songId,
+        user: userId
       })
       res.send(newBookmark)
     } catch (err) {
@@ -74,17 +58,15 @@ module.exports = {
       const {bookmarkId} = req.params
 
       const bookmark = await Bookmark.findOne({
-        where: {
-          id: bookmarkId,
-          UserId: userId
-        }
+        _id: bookmarkId,
+        user: userId
       })
       if (!bookmark) {
-        res.status(403).send({
+        return res.status(403).send({
           error: 'You do not have access to this bookmark.'
         })
       }
-      await bookmark.destroy()
+      await bookmark.remove()
 
       res.send(null)
     } catch (err) {

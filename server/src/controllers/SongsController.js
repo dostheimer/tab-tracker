@@ -1,6 +1,4 @@
 const {Song} = require('../models')
-const {Op} = require('sequelize')
-
 
 module.exports = {
   async index (req,res) {
@@ -8,21 +6,18 @@ module.exports = {
       let songs = null
       const search = req.query.search
       if (search) {
-        songs = await Song.findAll({
-          where: {
-            [Op.or]: [
+        songs = await Song.find({
+          $or: 
+            [
               'title', 'artist', 'genre', 'album'
-            ].map(key => ({
-              [key]: {
-                [Op.like]: `%${search}%`
+            ].map(key => {
+              return {
+                [key]: new RegExp(search,'i')
               }
-            }))
-          }
+            })
         })
       } else {
-        songs = await Song.findAll({
-          limit: 10
-        })
+        songs = await Song.find().limit(10)
       }
       
       res.send(songs)
@@ -35,7 +30,7 @@ module.exports = {
   },
   async show (req,res) {
     try {
-      const song = await Song.findByPk(req.params.songId)
+      const song = await Song.findById(req.params.songId)
       res.send(song)
     } catch (err) {
       res.status(500).send({
@@ -55,11 +50,9 @@ module.exports = {
   },
   async put (req,res) {
     try {
-      const song = await Song.update(req.body, {
-        where: {
-          id: req.params.songId
-        }
-      })
+      const song = await Song.updateOne({
+          _id: req.params.songId
+        },req.body)
       res.send(req.body)
     } catch (err) {
       res.status(500).send({

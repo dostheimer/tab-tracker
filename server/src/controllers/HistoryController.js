@@ -1,5 +1,4 @@
 const {History, Song} = require('../models')
-const {Op} = require('sequelize')
 const _ = require('lodash')
 
 module.exports = {
@@ -7,22 +6,17 @@ module.exports = {
     try {
       const userId = req.user.id
 
-      const history = await History.findAll({
-        where: {
-          UserId: userId
-        },
-        include: [
-          {
-            model: Song
-          }
-        ]
-      })
-        .map(history => history.toJSON())
+      const history = await History.find({
+        user: userId
+        })
+        .populate('song', ['title','artist'])
+        
+        /* .map(history => history.toJSON())
         .map(history => _.extend(
           {},
           history.Song,
           history
-        ))
+        )) */
       
       res.send(_.uniqBy(_.reverse(history), (iteratee) => iteratee.SongId))
     } catch (err) {
@@ -38,8 +32,8 @@ module.exports = {
       const {songId} = req.body
 
       const history = await History.create({
-        SongId: songId,
-        UserId: userId
+        song: songId,
+        user: userId
       })
       res.send(history)
     } catch (err) {
