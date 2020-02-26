@@ -1,10 +1,16 @@
-module.exports = (sequelize, DataTypes) => {
-  const History = sequelize.define('History', {})
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-  History.associate = (models) => {
-    History.belongsTo(models.User)
-    History.belongsTo(models.Song)
+const HistorySchema = new Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  song: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Song'
   }
+})
 
-  return History
-}
+
+module.exports = mongoose.model('History', HistorySchema);

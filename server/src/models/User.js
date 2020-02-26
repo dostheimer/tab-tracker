@@ -1,37 +1,31 @@
 const Promise = require('bluebird')
 const bcrypt = require('bcrypt')
+const SALT_FACTOR = 8
 
-function hashPassword (user) {
-  const SALT_FACTOR = 8
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-  if (!user.changed('password')) {
-    return;
-  }
-  return bcrypt
-    .hash(user.password, SALT_FACTOR)
+const UserSchema = new Schema({
+    email:{type:String,require:true,unique:true},
+    password:{type:String,require:true}
+});
+
+UserSchema.pre('save', function(next) {
+  var user = this;
+
+  // only hash the password if it has been modified (or is new)
+  if (!user.isModified('password')) return next();
+
+  bcrypt.hash(user.password, SALT_FACTOR)
     .then(hash => {
-      console.log('Hash Value: ' + hash)
-      user.setDataValue('password', hash)
+      user.password = hash;
+      next();
     })
-}
+})
 
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
-    email: {
-      type: DataTypes.STRING,
-      unique: true
-    },
-    password: DataTypes.STRING
-  }, {
-    hooks: {
-      beforeCreate: hashPassword,
-      beforeUpdate: hashPassword
-    }
-  })
+UserSchema.methods.comparePassword = function(password) {
+  console.log('called method')
+  return bcrypt.compare(password, this.password)
+};
 
-  User.prototype.comparePassword = function (password) {
-    return bcrypt.compare(password, this.password)
-  }
-
-  return User
-}
+module.exports = mongoose.model('User', UserSchema);
