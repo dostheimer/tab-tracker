@@ -1,40 +1,24 @@
-const {
-  sequelize,
-  Song,
-  User,
-  Bookmark,
-  History
-} = require('../src/models')
+const mongoose = require('mongoose')
+const config = require('../src/config/config')
 
-const Promise = require('bluebird')
-const songs = require('./songs.json')
-const users = require('./users.json')
-const bookmarks = require('./bookmarks.json')
-const history = require('./history.json')
+const users = require('./users')
+const songs = require('./songs')
+const bookmarks = require('./bookmarks')
+const history = require('./history')
 
-sequelize.sync({force: true})
-  .then(async () => {
-    await Promise.all(
-      users.map(user => {
-        return User.create(user)
-      })
-    )
-
-    await Promise.all(
-      songs.map(song => {
-        return Song.create(song)
-      })
-    )
-
-    await Promise.all(
-      bookmarks.map(bookmark => {
-        return Bookmark.create(bookmark)
-      })
-    )
-
-    await Promise.all(
-      history.map(hist => {
-        return History.create(hist)
-      })
-    )
+mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.database}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(async (conn) => {
+    console.log(`Connected to DB mongodb://${config.db.host}:${config.db.port}/${config.db.database}`)
+    await users()
+    await songs()
+    await bookmarks()
+    await history()
+    conn.connection.close()
+  })
+  .catch((err) => {
+    console.log(err)
+    process.exit()
   })
