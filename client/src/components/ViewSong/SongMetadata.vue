@@ -1,56 +1,58 @@
 <template>
   <panel title="Song Metadata">
-    <v-layout>
-      <v-flex xs6>
-        <div class="song-title">
-          {{song.title}}
-        </div>
-        <div class="song-artist">
-          {{song.artist}}
-        </div>
-        <div class="song-genre">
-          {{song.genre}}
-        </div>
-        <v-btn
-          dark
-          class="cyan"
-          :to="{
-            name: 'song-edit',
-            params () {
-              return {
-                songId: song._id
+    <v-container>
+      <v-row>
+        <v-col xs6>
+          <div class="song-title">
+            {{song.title}}
+          </div>
+          <div class="song-artist">
+            {{song.artist}}
+          </div>
+          <div class="song-genre">
+            {{song.genre}}
+          </div>
+          <v-btn
+            dark
+            class="cyan"
+            :to="{
+              name: 'song-edit',
+              params () {
+                return {
+                  songId: song._id
+                }
               }
-            }
-          }">
-          Edit
-        </v-btn>
-        <v-btn
-          v-if="isUserLoggedIn && !bookmark"
-          dark
-          class="cyan"
-          @click="setAsBookmark">
-          Bookmark
-        </v-btn>
-        <v-btn
-          v-if="isUserLoggedIn && bookmark"
-          dark
-          class="cyan"
-          @click="unsetAsBookmark">
-          UnBookmark
-        </v-btn>
-      </v-flex>
-      <v-flex xs6>
-        <img class="album-image" :src="song.albumImageUrl" />
-        <br />
-        {{song.album}}
-      </v-flex>
-    </v-layout>
+            }">
+            Edit
+          </v-btn>
+          <v-btn
+            v-if="isUserLoggedIn && !bookmark"
+            dark
+            class="cyan ml-2"
+            @click="setAsBookmark">
+            Bookmark
+          </v-btn>
+          <v-btn
+            v-if="isUserLoggedIn && bookmark"
+            dark
+            class="cyan ml-2"
+            @click="unsetAsBookmark">
+            UnBookmark
+          </v-btn>
+        </v-col>
+        <v-col xs6>
+          <img class="album-image" :src="song.albumImageUrl" />
+          <br />
+          {{song.album}}
+        </v-col>
+      </v-row>
+    </v-container>
   </panel>
 </template>
 
 <script>
-import {mapState} from 'vuex'
-import BookmarkService from '@/services/BookmarkService'
+import { mapState } from 'vuex'
+import BookmarkService from '@/api/BookmarkService'
 
 export default {
   data () {
@@ -91,7 +93,7 @@ export default {
     }
     try {
       const bookmarks = (await BookmarkService.index({
-        songId: this.song.id
+        songId: this.song._id
       })).data
       if (bookmarks.length > 0) {
         this.bookmark = bookmarks[0]
