@@ -2,23 +2,26 @@
   <panel title="Bookmarks">
     <v-data-table
       :headers="headers"
-      :pagination.sync="pagination"
       :items="bookmarks">
-      <template slot="items" slot-scope="props">
-        <td class="text-xs">
-          {{props.item.song.title}}
-        </td>
-        <td class="text-xs">
-          {{props.item.song.artist}}
-        </td>
+      <template v-slot:body="{ items }">
+        <tbody>
+          <tr v-for="item in items" :key="item.song._id">
+            <td class="text-xs-right">
+              {{item.song.title}}
+            </td>
+            <td class="text-xs-right">
+              {{item.song.artist}}
+            </td>
+          </tr>
+        </tbody>
       </template>
     </v-data-table>
   </panel>
 </template>
 
 <script>
-import {mapState} from 'vuex'
-import BookmarkService from '@/services/BookmarkService'
+import { mapState } from 'vuex'
+import BookmarkService from '@/api/BookmarkService'
 
 export default {
   data () {
@@ -33,10 +36,6 @@ export default {
           value: 'artist'
         }
       ],
-      pagination: {
-        sortBy: 'createdAt',
-        descending: true
-      },
       bookmarks: []
     }
   },

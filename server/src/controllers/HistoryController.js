@@ -18,7 +18,7 @@ module.exports = {
           history
         )) */
       
-      res.send(_.uniqBy(_.reverse(history), (iteratee) => iteratee.SongId))
+      res.send(_.uniqBy(_.reverse(history), (iteratee) => iteratee.song))
     } catch (err) {
       console.log(`Error ${err}`)
       res.status(500).send({

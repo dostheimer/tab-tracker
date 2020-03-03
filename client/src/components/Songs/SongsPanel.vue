@@ -9,42 +9,44 @@
       right
       middle
       fab>
-      <v-icon>add</v-icon>
+      <v-icon>mdi-plus</v-icon>
     </v-btn>
     <div v-for="song in songs" :key="song.id" class="song">
-      <v-layout>
-        <v-flex xs6>
-          <div class="song-title">
-            {{song.title}}
-          </div>
-          <div class="song-artist">
-            {{song.artist}}
-          </div>
-          <div class="song-genre">
-            {{song.genre}}
-          </div>
-          <v-btn
-            dark
-            class="cyan"
-            :to="{
-              name: 'song',
-              params: {
-                songId: song._id
-              }
-            }">
-            View
-          </v-btn>
-        </v-flex>
-        <v-flex xs6>
-          <img class="album-image" :src="song.albumImageUrl" />
-        </v-flex>
-      </v-layout>
+      <v-container>
+        <v-row>
+          <v-col xs6>
+            <div class="song-title">
+              {{song.title}}
+            </div>
+            <div class="song-artist">
+              {{song.artist}}
+            </div>
+            <div class="song-genre">
+              {{song.genre}}
+            </div>
+            <v-btn
+              dark
+              class="cyan"
+              :to="{
+                name: 'song',
+                params: {
+                  songId: song._id
+                }
+              }">
+              View
+            </v-btn>
+          </v-col>
+          <v-col xs6>
+            <img class="album-image" :src="song.albumImageUrl" />
+          </v-col>
+        </v-row>
+      </v-container>
     </div>
   </panel>
 </template>
 
 <script>
-import SongsService from '@/services/SongsService'
+import SongsService from '@/api/SongsService'
 
 export default {
   data () {
