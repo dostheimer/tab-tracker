@@ -6,7 +6,7 @@
           <song-metadata :song="song" />
         </v-col>
         <v-col xs6 class="ml-2">
-        <!-- <you-tube :youtubeId="song.youtubeId" /> -->
+          <youtube :video-id="song.youtubeId" width=560 height=260 />
         </v-col>
       </v-row>
     </v-container>
