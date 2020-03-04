@@ -60,9 +60,8 @@
             :rules="[required]" />
         </panel>
         <v-btn
-            class="cyan mt-4 ml-2"
-            @click="save"
-            dark>
+            class="mt-4 ml-2"
+            @click="save">
             Save Song
         </v-btn>
       </v-col>

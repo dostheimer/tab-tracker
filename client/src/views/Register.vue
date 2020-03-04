@@ -25,9 +25,7 @@
           </form>
           <br/>
           <v-btn
-            class="cyan"
-            @click="register"
-            dark>
+            @click="register">
             Register
           </v-btn>
         </panel>

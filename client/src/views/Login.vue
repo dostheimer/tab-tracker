@@ -23,9 +23,7 @@
           </form>
           <br/>
           <v-btn
-            class="cyan"
-            @click="login"
-            dark>
+            @click="login">
             Login
           </v-btn>
         </panel>

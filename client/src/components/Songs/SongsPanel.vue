@@ -1,6 +1,6 @@
 <template>
   <panel title="Songs">
-    <v-btn class="cyan accent-2"
+    <v-btn class="accent-2"
       slot="action"
       :to="{name: 'songs-create'}"
       light
@@ -25,8 +25,6 @@
               {{song.genre}}
             </div>
             <v-btn
-              dark
-              class="cyan"
               :to="{
                 name: 'song',
                 params: {

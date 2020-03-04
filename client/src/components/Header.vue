@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app dark dense class="cyan">
+  <v-app-bar app dense>
     <v-toolbar-title class="mr-4">
       <router-link
         :to="{name: 'songs'}"
@@ -11,7 +11,6 @@
     <v-toolbar-items>
       <v-btn
         text
-        dark
         :to="{name: 'songs'}">
         Browse
       </v-btn>
@@ -20,21 +19,18 @@
     <v-toolbar-items>
       <v-btn
         text
-        dark
         v-if="!$store.state.isUserLoggedIn"
         :to="{name: 'login'}">
         Login
       </v-btn>
       <v-btn
         text
-        dark
         v-if="!$store.state.isUserLoggedIn"
         :to="{name: 'register'}">
         Sign Up
       </v-btn>
       <v-btn
         text
-        dark
         v-if="$store.state.isUserLoggedIn"
         @click="logout">
         Log Out
@@ -58,8 +54,5 @@ export default {
 <style scoped>
 .home {
   cursor: pointer;
-}
-.home:hover {
-  color: #E9E;
 }
 </style>
