@@ -3,14 +3,20 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
-const config = require('./config/config')
 const app = express()
 
-mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.database}`, {
+const config = require('./config/config')
+
+let mdbConnection = null
+
+mongoose.connect(config.database.url, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(
-    () => { console.log(`Connected to DB mongodb://${config.db.host}:${config.db.port}/${config.db.database}`) },
+    (conn) => { 
+      mdbConnection = conn
+      console.log('Connected to MongoDB')
+    },
     err => { /** handle initial connection error */ console.log(err) }
 );
 
@@ -22,5 +28,21 @@ require('./passport')
 
 require('./routes')(app)
 
-app.listen(config.port)
-console.log(`Server started on ${config.port}`)
+app.listen(config.httpPort)
+console.log(`Server started on ${config.httpPort}`)
+
+// Correctly handle shutdown from OS
+process.on('SIGINT', function onSigint() {
+  app.shutdown();
+});
+
+process.on('SIGTERM', function onSigterm() {
+  app.shutdown();
+});
+
+app.shutdown = async function () {
+  // clean up your resources and exit
+  console.log('Disconnecting from MongoDB') 
+  await mdbConnection.connection.close() 
+  process.exit();
+};

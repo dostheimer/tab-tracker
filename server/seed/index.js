@@ -1,17 +1,17 @@
 const mongoose = require('mongoose')
-const config = require('../src/config/config')
+const config = require('./config/config')
 
 const users = require('./users')
 const songs = require('./songs')
 const bookmarks = require('./bookmarks')
 const history = require('./history')
 
-mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.database}`, {
+mongoose.connect(config.database.url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
   .then(async (conn) => {
-    console.log(`Connected to DB mongodb://${config.db.host}:${config.db.port}/${config.db.database}`)
+    console.log('Connected to MongoDB')
     await users()
     await songs()
     await bookmarks()

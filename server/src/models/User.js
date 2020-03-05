@@ -1,5 +1,5 @@
 const Promise = require('bluebird')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const SALT_FACTOR = 8
 
 const mongoose = require('mongoose');
