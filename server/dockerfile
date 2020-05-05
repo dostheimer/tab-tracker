@@ -11,5 +11,8 @@ USER node
 RUN npm install && npm cache clean --force --loglevel=error
 
 COPY --chown=node:node src ./src/
+COPY --chown=node:node .env ./
+
+EXPOSE 8081
 
 CMD [ "node", "src/app.js"]
